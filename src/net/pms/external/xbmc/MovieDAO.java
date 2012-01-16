@@ -1,0 +1,292 @@
+package net.pms.external.xbmc;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.pms.external.XBMCLog;
+import net.pms.external.xbmc.info.TitleInfo;
+
+public class MovieDAO extends XBMCDAO implements VideoDAO {
+
+	public MovieDAO(String dbLocation) {
+		super(dbLocation);
+	}
+
+	@Override
+	public List<String> getInitials() {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			st = getConnection().prepareStatement("select distinct substr(c00,1,1) initial from movieview order by initial asc");
+			rs = st.executeQuery();
+			List<String> result = new ArrayList<String>();
+			while (rs.next()) {
+				result.add(rs.getString("initial"));
+			}
+			return result;
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+
+	@Override
+	public Map<Integer, String> getTitlesByInitial(String initial) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			String stStr = "select idMovie, c00 from movieview where substr(c00,1,1) = ? order by c00 asc";
+			st = getConnection().prepareStatement(stStr);
+			st.setString(1, initial);
+			rs = st.executeQuery();
+			Map<Integer, String> result = new TreeMap<Integer, String>();
+			while (rs.next()) {
+				result.put(rs.getInt("idMovie"), rs.getString("c00"));
+			}
+			return result;
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+
+	@Override
+	public TitleInfo getTitleByID(int titleId) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			String stStr = "select * from movieview where movieview.idMovie = ?";
+			st = getConnection().prepareStatement(stStr);
+			st.setInt(1, titleId);
+			rs = st.executeQuery();
+			if (rs.next()) {
+				TitleInfo mi = new TitleInfo();
+				mi.setTitleId(titleId);
+				mi.setFileId(rs.getInt("idFile"));
+				mi.setFile(new File(rs.getString("strPath") + rs.getString("strFileName")));
+				mi.setSinopsis(rs.getString("c01"));
+				mi.setName(rs.getString("c00"));
+				mi.setDirector(rs.getString("c06"));
+				mi.setGenre(rs.getString("c14"));
+				mi.setAge(rs.getString("c12"));
+				mi.setRunningTime(rs.getString("c11"));
+				mi.setTagline(rs.getString("c03"));
+				mi.setRating(rs.getString("c05"));
+				mi.setWatched(rs.getInt("playCount"));
+				String tumbXML = rs.getString("c08");
+				// "((mailto\:|(news|(ht|f)tp(s?))\://){1}\S+)(.jpg)"
+
+				Pattern p = Pattern.compile("((mailto\\\\:|(news|(ht|f)tp(s?))\\\\://){1}\\\\S+)(.jpg)");
+				Matcher m = p.matcher(tumbXML);
+				List<URL> urls = new ArrayList<URL>();
+				if (m.matches()) {
+					for (int i = 0; i < m.groupCount(); i++) {
+						String group = m.group(i);
+						String[] thumbs = group.split("\">");
+						try {
+							urls.add(new URL(thumbs[0]));
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+
+				return mi;
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+
+	@Override
+	public List<String> getPosterURLs(int titleId) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			String stStr = "select c08 from movieview where movieview.idMovie = ?";
+			st = getConnection().prepareStatement(stStr);
+			st.setInt(1, titleId);
+			rs = st.executeQuery();
+			if (rs.next()) {
+				String tumbXML = rs.getString("c08");
+				XBMCLog.info(tumbXML);
+				List<String> urls = extractLinks(tumbXML);
+				XBMCLog.info(urls);
+				return urls;
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+
+	@Override
+	public List<String> getFanartURLs(int titleId) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			String stStr = "select c20 from movieview where movieview.idMovie = ?";
+			st = getConnection().prepareStatement(stStr);
+			st.setInt(1, titleId);
+			rs = st.executeQuery();
+			if (rs.next()) {
+				String tumbXML = rs.getString("c20");
+				XBMCLog.info(tumbXML);
+				List<String> urls = extractLinks(tumbXML);
+				XBMCLog.info(urls);
+				return urls;
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+
+	@Override
+	public void updateWatched(TitleInfo movie) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			String stStr = "update files set playCount = ? where idFile = ?";
+			st = getConnection().prepareStatement(stStr);
+			st.setInt(1, movie.getWatched());
+			st.setInt(2, movie.getFileId());
+			st.executeUpdate();
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+
+	@Override
+	public Map<Integer, String> getGenres() {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			st = getConnection().prepareStatement("select distinct genre.idGenre, genre.strGenre from movie, genrelinkmovie, genre where movie.idMovie = genrelinkmovie.idMovie and genre.idGenre = genrelinkmovie.idGenre");
+			rs = st.executeQuery();
+			Map<Integer, String> result = new TreeMap<Integer, String>();
+			while (rs.next()) {
+				result.put(rs.getInt("idGenre"), rs.getString("strGenre"));
+			}
+			return result;
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+
+	@Override
+	public Map<Integer, String> getTitlesByGenre(String genre) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			String stStr = "select distinct movie.idMovie, movie.c00 from movie, genrelinkmovie, genre where movie.idMovie = genrelinkmovie.idMovie and genre.idGenre = genrelinkmovie.idGenre and genre.strGenre=?";
+			st = getConnection().prepareStatement(stStr);
+			st.setString(1, genre);
+			rs = st.executeQuery();
+			Map<Integer, String> result = new TreeMap<Integer, String>();
+			while (rs.next()) {
+				result.put(rs.getInt("idMovie"), rs.getString("c00"));
+			}
+			return result;
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+
+	@Override
+	public Map<Integer, String> getEpisodes(int tvShowId, String season) {
+		return null;
+	}
+
+	@Override
+	public Map<String, String> getSeasons(int tvShowId) {
+		return null;
+	}
+
+	@Override
+	public Map<Integer, String> getYears() {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			st = getConnection().prepareStatement("select distinct c07 from movie order by c07 desc");
+			rs = st.executeQuery();
+			Map<Integer, String> result = new TreeMap<Integer, String>();
+			while (rs.next()) {
+				result.put(rs.getInt("c07"), rs.getString("c07"));
+			}
+			return result;
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+
+	@Override
+	public Map<Integer, String> getTitlesByYear(String year) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			String stStr = "select * from movieview where c07 = ? order by c00 asc";
+			st = getConnection().prepareStatement(stStr);
+			st.setString(1, year);
+			rs = st.executeQuery();
+			Map<Integer, String> result = new TreeMap<Integer, String>();
+			while (rs.next()) {
+				result.put(rs.getInt("idMovie"), rs.getString("c00"));
+			}
+			return result;
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+}
