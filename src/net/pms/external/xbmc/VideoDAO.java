@@ -31,4 +31,6 @@ public interface VideoDAO {
 
 	public List<String> getFanartURLs(int titleId);
 
+	public List<String> getActors(int titleId);
+
 }

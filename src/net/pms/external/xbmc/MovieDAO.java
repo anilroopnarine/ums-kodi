@@ -1,8 +1,6 @@
 package net.pms.external.xbmc;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.pms.external.XBMCLog;
 import net.pms.external.xbmc.info.TitleInfo;
@@ -72,52 +68,75 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 		ResultSet rs = null;
 		connect();
 		try {
-			String stStr = "select * from movieview where movieview.idMovie = ?";
+			String stStr = "select *, movieview.idFile fi from movieview,streamdetails where streamdetails.idFile = movieview.idFile and movieview.idMovie = ?";
 			st = getConnection().prepareStatement(stStr);
 			st.setInt(1, titleId);
 			rs = st.executeQuery();
-			if (rs.next()) {
-				TitleInfo mi = new TitleInfo();
-				mi.setTitleId(titleId);
-				mi.setFileId(rs.getInt("idFile"));
-				mi.setFile(new File(rs.getString("strPath") + rs.getString("strFileName")));
-				mi.setSinopsis(rs.getString("c01"));
-				mi.setName(rs.getString("c00"));
-				mi.setDirector(rs.getString("c06"));
-				mi.setGenre(rs.getString("c14"));
-				mi.setAge(rs.getString("c12"));
-				mi.setRunningTime(rs.getString("c11"));
-				mi.setTagline(rs.getString("c03"));
-				mi.setRating(rs.getString("c05"));
-				mi.setWatched(rs.getInt("playCount"));
-				String tumbXML = rs.getString("c08");
-				// "((mailto\:|(news|(ht|f)tp(s?))\://){1}\S+)(.jpg)"
-
-				Pattern p = Pattern.compile("((mailto\\\\:|(news|(ht|f)tp(s?))\\\\://){1}\\\\S+)(.jpg)");
-				Matcher m = p.matcher(tumbXML);
-				List<URL> urls = new ArrayList<URL>();
-				if (m.matches()) {
-					for (int i = 0; i < m.groupCount(); i++) {
-						String group = m.group(i);
-						String[] thumbs = group.split("\">");
-						try {
-							urls.add(new URL(thumbs[0]));
-						} catch (MalformedURLException e) {
-							e.printStackTrace();
-						}
-					}
+			TitleInfo mi = null;
+			while (rs.next()) {
+				if (mi == null) {
+					mi = new TitleInfo();
+					mi.setPosters(getPosterURLs(titleId));
+					mi.setFanart(getFanartURLs(titleId));
+					mi.setActors(getActors(titleId));
 				}
-
-				return mi;
-			} else {
-				return null;
+				if (rs.getInt("iStreamType") == 0) { // video stream
+					mi.setTitleId(titleId);
+					mi.setFileId(rs.getInt("fi"));
+					mi.setFile(new File(rs.getString("strPath") + rs.getString("strFileName")));
+					mi.setSinopsis(rs.getString("c01"));
+					mi.setName(rs.getString("c00"));
+					mi.setDirector(rs.getString("c15"));
+					mi.setWriter(rs.getString("c06"));
+					mi.setGenre(rs.getString("c14"));
+					mi.setAge(rs.getString("c12"));
+					mi.setRunningTime(rs.getString("c11"));
+					mi.setTagline(rs.getString("c03"));
+					mi.setRating(rs.getString("c05"));
+					mi.setWatched(rs.getInt("playCount"));
+					mi.setCountry(rs.getString("c21"));
+					mi.setStudio(rs.getString("c18"));
+					mi.setVideoCodec(rs.getString("strVideoCodec"));
+					mi.setVideoRes(rs.getString("iVideoWidth") + "x" + rs.getString("iVideoHeight"));
+				} else { // audio stream
+					mi.setAudioCodec(rs.getString("strAudioCodec"));
+					mi.setAudioChannels(rs.getString("iAudioChannels"));
+				}
 			}
+			return mi;
 		} catch (SQLException e) {
 			XBMCLog.error(e);
 			return null;
 		} finally {
 			disconnect(st, rs);
 		}
+	}
+
+	@Override
+	public List<String> getActors(int titleId) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			String stStr = "select strActor from actors, actorlinkmovie where actors.idActor = actorlinkmovie.idActor and idMovie = ?";
+			st = getConnection().prepareStatement(stStr);
+			st.setInt(1, titleId);
+			rs = st.executeQuery();
+			List<String> actors = new ArrayList<String>();
+			while (rs.next()) {
+				String actor = rs.getString("strActor");
+				XBMCLog.info(actor);
+				actors.add(actor);
+				return actors;
+			}
+			return actors;
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+
 	}
 
 	@Override

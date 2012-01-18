@@ -12,8 +12,12 @@ public class XBMCLog {
 		log.info("<XBMCLog> - " + msg);
 	}
 
-	public final static void error(Object msg) {
-		log.error("<XBMCLog> - " + msg);
+	public final static void error(String msg) {
+		log.error("<XBMCLog_ERROR> - " + msg);
+	}
+
+	public final static void error(Exception ex) {
+		log.error("<XBMCLog_ERROR>", ex);
 	}
 
 	public final static void logTimeStart() {

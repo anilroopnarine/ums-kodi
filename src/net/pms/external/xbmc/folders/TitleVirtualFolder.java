@@ -1,7 +1,5 @@
 package net.pms.external.xbmc.folders;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 
 import net.pms.dlna.RealFile;
@@ -18,29 +16,11 @@ public class TitleVirtualFolder extends VirtualFolder {
 
 	private VideoDAO dao;
 	private int titleId;
-	private List<String> posters;
-	private List<String> fanart;
 
 	public TitleVirtualFolder(int titleId, String title, VideoDAO dao) {
 		super(title, null);
 		this.titleId = titleId;
 		this.dao = dao;
-		this.posters = dao.getPosterURLs(titleId);
-		this.fanart = dao.getFanartURLs(titleId);
-	}
-
-	@Override
-	public InputStream getThumbnailInputStream() {
-		XBMCLog.info("getThumbnailInputStream: " + posters);
-		try {
-			if (posters != null) {
-				URL url = new URL(posters.get(0));
-				return url.openStream();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return super.getThumbnailInputStream();
 	}
 
 	@Override
@@ -48,6 +28,11 @@ public class TitleVirtualFolder extends VirtualFolder {
 		XBMCLog.logTimeStart("loading movie info from DB");
 		final TitleInfo info = dao.getTitleByID(titleId);
 		XBMCLog.logTimeStop();
+
+		if (info == null) {
+			addChild(new VirtualFolder("NOT FOUND CHECK LOG", null));
+			return;
+		}
 
 		if (!info.getFile().exists()) {
 			addChild(new VirtualFolder("<FILE IS MISSING>", null));
@@ -89,8 +74,29 @@ public class TitleVirtualFolder extends VirtualFolder {
 		if (info.getDirector() != null && info.getDirector().length() > 0) {
 			addChild(new VirtualFolder("Director: " + info.getDirector(), null));
 		}
+		if (info.getWriter() != null && info.getWriter().length() > 0) {
+			addChild(new VirtualFolder("Writer: " + info.getWriter(), null));
+		}
 		if (info.getRating() != null && info.getRating().length() > 0) {
 			addChild(new VirtualFolder("IMDB Rating: " + info.getRating(), null));
+		}
+		if (info.getCountry() != null && info.getCountry().length() > 0) {
+			addChild(new VirtualFolder("Country: " + info.getCountry(), null));
+		}
+		if (info.getStudio() != null && info.getStudio().length() > 0) {
+			addChild(new VirtualFolder("Studio: " + info.getStudio(), null));
+		}
+		if (info.getVideoCodec() != null && info.getVideoCodec().length() > 0) {
+			addChild(new VirtualFolder("Video CODEC: " + info.getVideoCodec(), null));
+		}
+		if (info.getVideoRes() != null && info.getVideoRes().length() > 0) {
+			addChild(new VirtualFolder("Video Size: " + info.getVideoRes(), null));
+		}
+		if (info.getAudioCodec() != null && info.getAudioCodec().length() > 0) {
+			addChild(new VirtualFolder("Audio CODEC: " + info.getAudioCodec(), null));
+		}
+		if (info.getAudioChannels() != null && info.getAudioChannels().length() > 0) {
+			addChild(new VirtualFolder("Audio Channels: " + info.getAudioChannels(), null));
 		}
 		if (info.getEpisode() != null && info.getEpisode().length() > 0) {
 			addChild(new VirtualFolder("Season/Episode: " + info.getEpisode(), null));
@@ -111,38 +117,25 @@ public class TitleVirtualFolder extends VirtualFolder {
 			}
 		});
 
-		if (posters != null) {
-			for (final String posterUrl : posters) {
-				addChild(new WebStream(Consts.POSTER, posterUrl, posterUrl, Format.VIDEO) {
-					@Override
-					public InputStream getInputStream() {
-						try {
-							XBMCLog.info("getInputStream: " + posterUrl);
-							URL url = new URL(posterUrl);
-							return url.openStream();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return super.getInputStream();
-					}
-				});
-			}
-		}
+		addThumbnails(info.getPosters(), Consts.POSTER);
+		addThumbnails(info.getPosters(), Consts.FANART);
+	}
 
-		if (fanart != null) {
-			for (final String fanartUrl : fanart) {
-				addChild(new WebStream(Consts.FANART, fanartUrl, fanartUrl, Format.VIDEO) {
-					@Override
-					public InputStream getInputStream() {
-						try {
-							XBMCLog.info("getInputStream: " + fanartUrl);
-							URL url = new URL(fanartUrl);
-							return url.openStream();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return super.getInputStream();
-					}
+	private void addThumbnails(List<String> thumbUrls, String title) {
+		if (thumbUrls != null) {
+			for (final String thumbUrl : thumbUrls) {
+				addChild(new WebStream(title, thumbUrl, thumbUrl, Format.VIDEO) {
+					// @Override
+					// public InputStream getInputStream() {
+					// try {
+					// XBMCLog.info("getInputStream: " + thumbUrl);
+					// URL url = new URL(thumbUrl);
+					// return url.openStream();
+					// } catch (Exception e) {
+					// e.printStackTrace();
+					// }
+					// return super.getInputStream();
+					// }
 				});
 			}
 		}

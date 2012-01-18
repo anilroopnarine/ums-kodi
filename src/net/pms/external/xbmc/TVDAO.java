@@ -73,8 +73,12 @@ public class TVDAO extends XBMCDAO implements VideoDAO {
 			st = getConnection().prepareStatement(stStr);
 			st.setInt(1, episodeId);
 			rs = st.executeQuery();
+			TitleInfo mi = null;
 			if (rs.next()) {
-				TitleInfo mi = new TitleInfo();
+				mi = new TitleInfo();
+				mi.setPosters(getPosterURLs(episodeId));
+				mi.setFanart(getFanartURLs(episodeId));
+				mi.setActors(getActors(episodeId));
 				mi.setTitleId(episodeId);
 				mi.setFileId(rs.getInt("idFile"));
 				mi.setFile(new File(rs.getString("strPath") + rs.getString("strFileName")));
@@ -88,10 +92,8 @@ public class TVDAO extends XBMCDAO implements VideoDAO {
 				mi.setRating(rs.getString("c05"));
 				mi.setWatched(rs.getInt("playCount"));
 				mi.setEpisode(rs.getString("c12") + "x" + rs.getString("c13"));
-				return mi;
-			} else {
-				return null;
 			}
+			return mi;
 		} catch (SQLException e) {
 			XBMCLog.error(e);
 			return null;
@@ -256,7 +258,34 @@ public class TVDAO extends XBMCDAO implements VideoDAO {
 			disconnect(st, rs);
 		}
 	}
-	
+
+	@Override
+	public List<String> getActors(int titleId) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			String stStr = "select strActor from actors, actorlinktvshow where actors.idActor = actorlinktvshow.idActor and idShow = ?";
+			st = getConnection().prepareStatement(stStr);
+			st.setInt(1, titleId);
+			rs = st.executeQuery();
+			List<String> actors = new ArrayList<String>();
+			while (rs.next()) {
+				String actor = rs.getString("strActor");
+				XBMCLog.info(actor);
+				actors.add(actor);
+				return actors;
+			}
+			return actors;
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+
+	}
+
 	@Override
 	public List<String> getPosterURLs(int titleId) {
 		PreparedStatement st = null;
@@ -283,9 +312,23 @@ public class TVDAO extends XBMCDAO implements VideoDAO {
 			disconnect(st, rs);
 		}
 	}
-	
+
 	@Override
 	public List<String> getFanartURLs(int titleId) {
 		return null;
+	}
+
+	@Override
+	protected List<String> extractLinks(String source) {
+		XBMCLog.info(source);
+		List<String> links = new ArrayList<String>();
+		if (source != null && source.length() > 0) {
+			if (source.startsWith("<thumb>")) {
+				source = source.substring(source.indexOf("<thumb>") + 7, source.indexOf("</thumb>"));
+				XBMCLog.info(source);
+				links.add(source);
+			}
+		}
+		return links;
 	}
 }

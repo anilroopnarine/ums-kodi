@@ -1,7 +1,6 @@
 package net.pms.external.xbmc.info;
 
 import java.io.File;
-import java.net.URL;
 import java.util.List;
 
 public class TitleInfo {
@@ -9,7 +8,8 @@ public class TitleInfo {
 	private int titleId;
 	private int fileId;
 	private File file;
-	private List<URL> thumbnails;
+	private List<String> posters;
+	private List<String> fanart;
 	private String name;
 	private String sinopsis;
 	private String tagline;
@@ -17,9 +17,17 @@ public class TitleInfo {
 	private String runningTime;
 	private String genre;
 	private String director;
+	private String writer;
+	private List<String> actors;
 	private String age;
 	private int watched;
 	private String episode;
+	private String country;
+	private String studio;
+	private String videoCodec;
+	private String videoRes;
+	private String audioCodec;
+	private String audioChannels;
 
 	public String getName() {
 		return name;
@@ -125,11 +133,83 @@ public class TitleInfo {
 		this.episode = episode;
 	}
 
-	public List<URL> getThumbnails() {
-		return thumbnails;
+	public String getWriter() {
+		return writer;
 	}
 
-	public void setThumbnails(List<URL> thumbnails) {
-		this.thumbnails = thumbnails;
+	public void setWriter(String writer) {
+		this.writer = writer;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getStudio() {
+		return studio;
+	}
+
+	public void setStudio(String studio) {
+		this.studio = studio;
+	}
+
+	public String getVideoCodec() {
+		return videoCodec;
+	}
+
+	public void setVideoCodec(String videoCodec) {
+		this.videoCodec = videoCodec;
+	}
+
+	public String getVideoRes() {
+		return videoRes;
+	}
+
+	public void setVideoRes(String videoRes) {
+		this.videoRes = videoRes;
+	}
+
+	public String getAudioCodec() {
+		return audioCodec;
+	}
+
+	public void setAudioCodec(String audioCodec) {
+		this.audioCodec = audioCodec;
+	}
+
+	public String getAudioChannels() {
+		return audioChannels;
+	}
+
+	public void setAudioChannels(String audioChannels) {
+		this.audioChannels = audioChannels;
+	}
+
+	public List<String> getActors() {
+		return actors;
+	}
+
+	public void setActors(List<String> actors) {
+		this.actors = actors;
+	}
+
+	public List<String> getPosters() {
+		return posters;
+	}
+
+	public void setPosters(List<String> posters) {
+		this.posters = posters;
+	}
+
+	public List<String> getFanart() {
+		return fanart;
+	}
+
+	public void setFanart(List<String> fanart) {
+		this.fanart = fanart;
 	}
 }
