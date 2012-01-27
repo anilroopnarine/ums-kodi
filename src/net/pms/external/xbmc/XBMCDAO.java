@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,10 +16,15 @@ import net.pms.external.XBMCLog;
 public abstract class XBMCDAO {
 
 	private String dbLocation;
+	private Properties dbProperties;
 	private Connection connection;
 
 	public XBMCDAO(String dbLocation) {
 		this.dbLocation = dbLocation;
+	}
+
+	public XBMCDAO(Properties dbProperties) {
+		this.dbProperties = dbProperties;
 	}
 
 	protected void connect() {

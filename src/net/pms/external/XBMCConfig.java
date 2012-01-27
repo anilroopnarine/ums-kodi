@@ -3,28 +3,18 @@ package net.pms.external;
 import net.pms.PMS;
 
 public class XBMCConfig {
-	private final static String PMS_XBMC_CONF_VIDEO = "pmsxbmc.db.video";
-	private final static String PMS_XBMC_CONF_ENABLED = "pmsxbmc.enabled";
+	public final static String PMS_XBMC_VIDEO_SQLITE = "pmsxbmc.video.sqlite.db";
+	public final static String PMS_XBMC_VIDEO_MYSQL_HOST = "pmsxbmc.video.mysql.host";
+	public final static String PMS_XBM_VIDEOC_MYSQL_PORT = "pmsxbmc.video.mysql.port";
+	public final static String PMS_XBMC_VIDEO_MYSQL_DB = "pmsxbmc.video.mysql.db";
+	public final static String PMS_XBMC_VIDEO_MYSQL_USER = "pmsxbmc.video.mysql.user";
+	public final static String PMS_XBMC_VIDEO_MYSQL_PASS = "pmsxbmc.video.mysql.pass";
 
-	public static final boolean isEnabled() {
-		String enabled = (String) PMS.getConfiguration().getCustomProperty(PMS_XBMC_CONF_ENABLED);
-		if (enabled == null) {
-			enabled = "0";
-		}
-		XBMCLog.info("is PMS XBMC Plug enabled? = " + enabled);
-		return enabled.equals("1");
+	public static final void setSetting(String key, String value) {
+		PMS.getConfiguration().setCustomProperty(key, value);
 	}
-
-	public static final void setEnabled(boolean enabled) {
-		XBMCLog.info("setting PMS XBMC Plug enabled = " + enabled);
-		PMS.getConfiguration().setCustomProperty(PMS_XBMC_CONF_ENABLED, enabled ? "1" : "0");
-	}
-
-	public static final String getVideoDBLocation() {
-		return (String) PMS.getConfiguration().getCustomProperty(PMS_XBMC_CONF_VIDEO);
-	}
-
-	public static final void setVideoDBLocation(String location) {
-		PMS.getConfiguration().setCustomProperty(PMS_XBMC_CONF_VIDEO, location);
+	
+	public static final String getSetting(String key) {
+		return (String) PMS.getConfiguration().getCustomProperty(key);
 	}
 }

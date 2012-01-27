@@ -16,7 +16,7 @@ public class VideoFolder extends VirtualFolder {
 
 	public void discoverChildren() {
 		XBMCLog.info("discovering video folders");
-		addChild(new MoviesFolder("Movies", new MovieDAO(XBMCConfig.getVideoDBLocation())));
-		addChild(new TVShowsFolder("TV shows", new TVDAO(XBMCConfig.getVideoDBLocation())));
+		addChild(new MoviesFolder("Movies", new MovieDAO(XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_SQLITE))));
+		addChild(new TVShowsFolder("TV shows", new TVDAO(XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_SQLITE))));
 	}
 }
