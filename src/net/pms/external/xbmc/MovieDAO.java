@@ -14,8 +14,8 @@ import net.pms.external.xbmc.info.TitleInfo;
 
 public class MovieDAO extends XBMCDAO implements VideoDAO {
 
-	public MovieDAO(String dbLocation) {
-		super(dbLocation);
+	public MovieDAO(int dbType) {
+		super(dbType);
 	}
 
 	@Override

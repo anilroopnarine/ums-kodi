@@ -1,10 +1,11 @@
 package net.pms.external.xbmc.folders;
 
 import net.pms.dlna.virtual.VirtualFolder;
-import net.pms.external.XBMCLog;
 import net.pms.external.XBMCConfig;
+import net.pms.external.XBMCLog;
 import net.pms.external.xbmc.MovieDAO;
 import net.pms.external.xbmc.TVDAO;
+import net.pms.external.xbmc.XBMCDAO;
 import net.pms.external.xbmc.folders.movie.MoviesFolder;
 import net.pms.external.xbmc.folders.tv.TVShowsFolder;
 
@@ -16,7 +17,13 @@ public class VideoFolder extends VirtualFolder {
 
 	public void discoverChildren() {
 		XBMCLog.info("discovering video folders");
-		addChild(new MoviesFolder("Movies", new MovieDAO(XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_SQLITE))));
-		addChild(new TVShowsFolder("TV shows", new TVDAO(XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_SQLITE))));
+		int dbType = XBMCDAO.DB_TYPE_SQLITE;
+
+		if (XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_HOST) != null) {
+			dbType = XBMCDAO.DB_TYPE_MYSQL;
+		}
+
+		addChild(new MoviesFolder("Movies", new MovieDAO(dbType)));
+		addChild(new TVShowsFolder("TV shows", new TVDAO(dbType)));
 	}
 }

@@ -9,9 +9,11 @@ import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.pms.dlna.DLNAResource;
@@ -30,10 +32,22 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 
 	private JButton browseSQLiteFileButt;
 	private JButton configMySQLButt;
-	private JLabel sqLiteLocationLab;
-	private JLabel mySqlLab;
-	private JLabel sqLiteLab;
+	private JLabel sqLiteLocationLab = new JLabel(XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_SQLITE));
+	private JLabel mySqlLab = new JLabel("Configure MySQL");
+	private JLabel sqLiteLab = new JLabel("Configure SQLite");
 	private JFileChooser sqLiteFileChooser;
+	private JDialog mySqlConfig;
+
+	private JTextField hostText = new JTextField();
+	private JLabel hostLab = new JLabel("Host");
+	private JTextField portText;
+	private JLabel portLab = new JLabel("Port");
+	private JTextField dbText;
+	private JLabel dbLab = new JLabel("Database Name");
+	private JTextField userText;
+	private JLabel userLab = new JLabel("Username");
+	private JTextField passwordText;
+	private JLabel passwordLab = new JLabel("Password");
 
 	public PMSXBMCPlugin() {
 		XBMCLog.info("creating root folder");
@@ -70,7 +84,7 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 
 		c.gridx = 0;
 		c.gridy = 0;
-		confPanel.add(getMySqlLab(), c);
+		confPanel.add(mySqlLab, c);
 
 		c.gridx = 1;
 		c.gridy = 0;
@@ -78,7 +92,7 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 
 		c.gridx = 0;
 		c.gridy = 1;
-		confPanel.add(getSqLiteLab(), c);
+		confPanel.add(sqLiteLab, c);
 
 		c.gridx = 1;
 		c.gridy = 1;
@@ -88,7 +102,7 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 		c.gridwidth = 3;
 		c.gridx = 0;
 		c.gridy = 2;
-		confPanel.add(getSqLiteLocationLab(), c);
+		confPanel.add(sqLiteLocationLab, c);
 
 		return confPanel;
 	}
@@ -105,7 +119,10 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 		}
 
 		public void actionPerformed(ActionEvent ae) {
-			if (ae.getSource() == getBrowseSQLiteFileButt()) {
+			if (ae.getSource() == getConfigMySQLButt()) {
+				getMySqlConfig().setVisible(true);
+			}
+			else if (ae.getSource() == getBrowseSQLiteFileButt()) {
 
 				int option = getSqLiteFileChooser().showOpenDialog(null);
 
@@ -116,8 +133,8 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 							String location = getSqLiteFileChooser().getSelectedFile().getCanonicalPath().toString();
 							if (type == TYPE_VIDEO) {
 								XBMCConfig.setSetting(XBMCConfig.PMS_XBMC_VIDEO_SQLITE, location);
-								getSqLiteLocationLab().setText(location);
-								getSqLiteLocationLab().repaint();
+								sqLiteLocationLab.setText(location);
+								sqLiteLocationLab.repaint();
 							}
 							XBMCLog.info("Using following DB file: " + location);
 						} else {
@@ -146,27 +163,6 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 		return configMySQLButt;
 	}
 
-	public JLabel getSqLiteLocationLab() {
-		if (sqLiteLocationLab == null) {
-			sqLiteLocationLab = new JLabel(XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_SQLITE));
-		}
-		return sqLiteLocationLab;
-	}
-
-	public JLabel getMySqlLab() {
-		if (mySqlLab == null) {
-			mySqlLab = new JLabel("Configure MySQL");
-		}
-		return mySqlLab;
-	}
-
-	public JLabel getSqLiteLab() {
-		if (sqLiteLab == null) {
-			sqLiteLab = new JLabel("Configure SQLite");
-		}
-		return sqLiteLab;
-	}
-
 	public JFileChooser getSqLiteFileChooser() {
 		if (sqLiteFileChooser == null) {
 			sqLiteFileChooser = new JFileChooser(new File(XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_SQLITE)));
@@ -176,4 +172,10 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 		return sqLiteFileChooser;
 	}
 
+	public JDialog getMySqlConfig() {
+		if (mySqlConfig == null) {
+			mySqlConfig = new JDialog();
+		}
+		return mySqlConfig;
+	}
 }

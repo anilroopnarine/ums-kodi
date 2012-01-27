@@ -15,8 +15,8 @@ import net.pms.external.xbmc.info.TitleInfo;
 
 public class TVDAO extends XBMCDAO implements VideoDAO {
 
-	public TVDAO(String dbLocation) {
-		super(dbLocation);
+	public TVDAO(int dbType) {
+		super(dbType);
 	}
 
 	@Override

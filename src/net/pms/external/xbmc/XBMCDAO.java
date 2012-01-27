@@ -7,30 +7,47 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.pms.external.XBMCConfig;
 import net.pms.external.XBMCLog;
 
 public abstract class XBMCDAO {
 
-	private String dbLocation;
-	private Properties dbProperties;
+	public final static int DB_TYPE_MYSQL = 1;
+	public final static int DB_TYPE_SQLITE = 2;
+
+	private int dbType;
 	private Connection connection;
 
-	public XBMCDAO(String dbLocation) {
-		this.dbLocation = dbLocation;
-	}
-
-	public XBMCDAO(Properties dbProperties) {
-		this.dbProperties = dbProperties;
+	public XBMCDAO(int dbType) {
+		this.dbType = dbType;
 	}
 
 	protected void connect() {
+		if (dbType == DB_TYPE_MYSQL) {
+			connectMySQL();
+		} else if (dbType == DB_TYPE_SQLITE) {
+			connectSQLite();
+		}
+	}
+
+	private void connectMySQL() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			String url = "jdbc:mysql://" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_HOST) + ":" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEOC_MYSQL_PORT) + "/" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_DB);
+			XBMCLog.info("connecting to mysql with url: " + url);
+			connection = DriverManager.getConnection(url, XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_USER), XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_PASS));
+		} catch (Exception e) {
+			XBMCLog.error(e);
+		}
+	}
+
+	private void connectSQLite() {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			connection = DriverManager.getConnection("jdbc:sqlite:" + dbLocation);
+			connection = DriverManager.getConnection("jdbc:sqlite:" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_SQLITE));
 		} catch (Exception e) {
 			XBMCLog.error(e);
 		}
@@ -61,7 +78,7 @@ public abstract class XBMCDAO {
 
 	private Pattern htmltag = Pattern.compile("<thumb\\b[^>]*preview=\"[^>]*>(.*?)</thumb>");
 	private Pattern link = Pattern.compile("preview=\"[^>]*\">");
-	
+
 	protected List<String> extractLinks(String source) {
 		List<String> links = new ArrayList<String>();
 		Matcher tagmatch = htmltag.matcher(source);
