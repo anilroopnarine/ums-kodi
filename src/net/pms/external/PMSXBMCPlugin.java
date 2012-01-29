@@ -12,6 +12,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -36,18 +37,8 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 	private JLabel mySqlLab = new JLabel("Configure MySQL");
 	private JLabel sqLiteLab = new JLabel("Configure SQLite");
 	private JFileChooser sqLiteFileChooser;
-	private JDialog mySqlConfig;
-
-	private JTextField hostText = new JTextField();
-	private JLabel hostLab = new JLabel("Host");
-	private JTextField portText;
-	private JLabel portLab = new JLabel("Port");
-	private JTextField dbText;
-	private JLabel dbLab = new JLabel("Database Name");
-	private JTextField userText;
-	private JLabel userLab = new JLabel("Username");
-	private JTextField passwordText;
-	private JLabel passwordLab = new JLabel("Password");
+	private String[] mySqlDetails;
+	private MySqlOptionPane mySqlDialog = new MySqlOptionPane();
 
 	public PMSXBMCPlugin() {
 		XBMCLog.info("creating root folder");
@@ -120,9 +111,21 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 
 		public void actionPerformed(ActionEvent ae) {
 			if (ae.getSource() == getConfigMySQLButt()) {
-				getMySqlConfig().setVisible(true);
-			}
-			else if (ae.getSource() == getBrowseSQLiteFileButt()) {
+				XBMCLog.info("configuring mysql");
+				String[] details = mySqlDialog.showInputDialog();
+				if (details != null) {
+					for (String string : details) {
+						XBMCLog.info(string);
+					}
+					setMySqlDetails(details);
+					XBMCConfig.setSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_HOST, details[0]);
+					XBMCConfig.setSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_PORT, details[1]);
+					XBMCConfig.setSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_DB, details[2]);
+					XBMCConfig.setSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_USER, details[3]);
+					XBMCConfig.setSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_PASS, details[4]);
+				}
+
+			} else if (ae.getSource() == getBrowseSQLiteFileButt()) {
 
 				int option = getSqLiteFileChooser().showOpenDialog(null);
 
@@ -159,6 +162,7 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 	public JButton getConfigMySQLButt() {
 		if (configMySQLButt == null) {
 			configMySQLButt = new JButton("Configure");
+			configMySQLButt.addActionListener(new ConfigActionListener());
 		}
 		return configMySQLButt;
 	}
@@ -172,10 +176,99 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 		return sqLiteFileChooser;
 	}
 
-	public JDialog getMySqlConfig() {
-		if (mySqlConfig == null) {
-			mySqlConfig = new JDialog();
+	public String[] getMySqlDetails() {
+		if (mySqlDetails == null) {
+			mySqlDetails = new String[] { XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_HOST), XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_PORT), XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_DB), XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_USER), XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_PASS) };
 		}
-		return mySqlConfig;
+		return mySqlDetails;
+	}
+
+	public void setMySqlDetails(String[] mySqlDetails) {
+		this.mySqlDetails = mySqlDetails;
+	}
+
+	@SuppressWarnings("serial")
+	class MySqlOptionPane extends JOptionPane {
+		public String[] showInputDialog() {
+			String[] data = null;
+			class GetData extends JDialog implements ActionListener {
+				JTextField host = new JTextField(getMySqlDetails()[0]);
+				JTextField port = new JTextField(getMySqlDetails()[1]);
+				JTextField db = new JTextField(getMySqlDetails()[2]);
+				JTextField user = new JTextField(getMySqlDetails()[3]);
+				JTextField pass = new JTextField(getMySqlDetails()[4]);
+				JButton btnOK = new JButton("   OK   ");
+				JButton btnCancel = new JButton("Cancel");
+				String[] str = null;
+
+				public GetData() {
+					setModal(true);
+					setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+					setLocation(400, 300);
+
+					getContentPane().setLayout(new GridBagLayout());
+					GridBagConstraints c = new GridBagConstraints();
+					c.fill = GridBagConstraints.HORIZONTAL;
+					c.weightx = 0.5;
+
+					c.gridx = 0;
+					c.gridy = 0;
+					getContentPane().add(new JLabel("Host"), c);
+					c.gridx = 1;
+					getContentPane().add(host, c);
+
+					c.gridx = 0;
+					c.gridy = 1;
+					getContentPane().add(new JLabel("Port"), c);
+					c.gridx = 1;
+					getContentPane().add(port, c);
+
+					c.gridx = 0;
+					c.gridy = 2;
+					getContentPane().add(new JLabel("Database"), c);
+					c.gridx = 1;
+					getContentPane().add(db, c);
+
+					c.gridx = 0;
+					c.gridy = 3;
+					getContentPane().add(new JLabel("Username"), c);
+					c.gridx = 1;
+					getContentPane().add(user, c);
+
+					c.gridx = 0;
+					c.gridy = 4;
+					getContentPane().add(new JLabel("Password"), c);
+					c.gridx = 1;
+					getContentPane().add(pass, c);
+
+					JPanel jp = new JPanel();
+					btnOK.addActionListener(this);
+					btnCancel.addActionListener(this);
+					jp.add(btnOK);
+					jp.add(btnCancel);
+
+					c.weightx = 0.0;
+					c.gridwidth = 3;
+					c.gridx = 0;
+					c.gridy = 5;
+					getContentPane().add(jp, c);
+					pack();
+					setVisible(true);
+				}
+
+				public void actionPerformed(ActionEvent ae) {
+					if (ae.getSource() == btnOK) {
+						str = new String[] { host.getText(), port.getText(), db.getText(), user.getText(), pass.getText() };
+					}
+					dispose();
+				}
+
+				public String[] getData() {
+					return str;
+				}
+			}
+			data = new GetData().getData();
+			return data;
+		}
 	}
 }

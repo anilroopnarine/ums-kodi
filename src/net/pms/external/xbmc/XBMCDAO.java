@@ -36,7 +36,7 @@ public abstract class XBMCDAO {
 	private void connectMySQL() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			String url = "jdbc:mysql://" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_HOST) + ":" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEOC_MYSQL_PORT) + "/" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_DB);
+			String url = "jdbc:mysql://" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_HOST) + ":" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_PORT) + "/" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_DB);
 			XBMCLog.info("connecting to mysql with url: " + url);
 			connection = DriverManager.getConnection(url, XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_USER), XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_PASS));
 		} catch (Exception e) {
