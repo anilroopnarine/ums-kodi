@@ -169,7 +169,13 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 
 	public JFileChooser getSqLiteFileChooser() {
 		if (sqLiteFileChooser == null) {
-			sqLiteFileChooser = new JFileChooser(new File(XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_SQLITE)));
+			String path = XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_SQLITE);
+			if (path == null) {
+				sqLiteFileChooser = new JFileChooser();
+			}
+			else {
+				sqLiteFileChooser = new JFileChooser(new File(path));
+			}
 			sqLiteFileChooser.setDialogTitle("Locate XBMC Database file");
 			sqLiteFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("XBMC SQLite Database", "db", "DB"));
 		}
