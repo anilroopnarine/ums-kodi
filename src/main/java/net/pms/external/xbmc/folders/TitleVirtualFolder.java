@@ -33,7 +33,8 @@ public class TitleVirtualFolder extends VirtualFolder {
 			addChild(new VirtualFolder("NOT FOUND CHECK LOG", null));
 			return;
 		}
-
+		
+		
 		if (!info.getFile().exists()) {
 			addChild(new VirtualFolder("<FILE IS MISSING>", null));
 			return;

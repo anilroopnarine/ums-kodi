@@ -1,6 +1,5 @@
 package net.pms.external.xbmc;
 
-import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,6 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import net.pms.external.XBMCLog;
+import net.pms.external.xbmc.info.MediaFile;
 import net.pms.external.xbmc.info.TitleInfo;
 
 public class MovieDAO extends XBMCDAO implements VideoDAO {
@@ -83,7 +83,7 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 				if (rs.getInt("iStreamType") == 0) { // video stream
 					mi.setTitleId(titleId);
 					mi.setFileId(rs.getInt("fi"));
-					mi.setFile(new File(rs.getString("strPath") + rs.getString("strFileName")));
+					mi.setFile(new MediaFile(rs.getString("strPath") + rs.getString("strFileName")));
 					mi.setSinopsis(rs.getString("c01"));
 					mi.setName(rs.getString("c00"));
 					mi.setDirector(rs.getString("c15"));

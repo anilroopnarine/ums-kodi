@@ -1,6 +1,7 @@
 package net.pms.external.xbmc;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,8 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import jcifs.smb.SmbFile;
+
 import net.pms.external.Consts;
 import net.pms.external.XBMCLog;
+import net.pms.external.xbmc.info.MediaFile;
 import net.pms.external.xbmc.info.TitleInfo;
 
 public class TVDAO extends XBMCDAO implements VideoDAO {
@@ -81,7 +85,7 @@ public class TVDAO extends XBMCDAO implements VideoDAO {
 				mi.setActors(getActors(episodeId));
 				mi.setTitleId(episodeId);
 				mi.setFileId(rs.getInt("idFile"));
-				mi.setFile(new File(rs.getString("strPath") + rs.getString("strFileName")));
+				mi.setFile(new MediaFile(rs.getString("strPath") + rs.getString("strFileName")));
 				mi.setSinopsis(rs.getString("c01"));
 				mi.setName(rs.getString("c00"));
 				mi.setDirector(rs.getString("c06"));

@@ -1,13 +1,12 @@
 package net.pms.external.xbmc.info;
 
-import java.io.File;
 import java.util.List;
 
 public class TitleInfo {
 
 	private int titleId;
 	private int fileId;
-	private File file;
+	private MediaFile file;
 	private List<String> posters;
 	private List<String> fanart;
 	private String name;
@@ -45,11 +44,11 @@ public class TitleInfo {
 		this.sinopsis = sinopsis;
 	}
 
-	public File getFile() {
+	public MediaFile getFile() {
 		return file;
 	}
 
-	public void setFile(File file) {
+	public void setFile(MediaFile file) {
 		this.file = file;
 	}
 
