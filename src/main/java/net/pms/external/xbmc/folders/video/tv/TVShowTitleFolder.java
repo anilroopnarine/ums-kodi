@@ -1,4 +1,4 @@
-package net.pms.external.xbmc.folders.tv;
+package net.pms.external.xbmc.folders.video.tv;
 
 import java.util.ArrayList;
 import java.util.List;

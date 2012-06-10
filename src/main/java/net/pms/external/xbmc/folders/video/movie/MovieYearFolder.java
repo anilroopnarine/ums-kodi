@@ -1,4 +1,4 @@
-package net.pms.external.xbmc.folders.movie;
+package net.pms.external.xbmc.folders.video.movie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,27 +9,27 @@ import net.pms.external.Consts;
 import net.pms.external.XBMCLog;
 import net.pms.external.xbmc.VideoDAO;
 import net.pms.external.xbmc.folders.ListFolder;
-import net.pms.external.xbmc.folders.TitleVirtualFolder;
+import net.pms.external.xbmc.folders.video.TitleVirtualFolder;
 
-public class MovieGenreFolder extends VirtualFolder {
+public class MovieYearFolder extends VirtualFolder {
 
 	private VideoDAO dao;
 
-	public MovieGenreFolder(VideoDAO dao) {
-		super(Consts.GENRE, null);
+	public MovieYearFolder(VideoDAO dao) {
+		super(Consts.YEAR, null);
 		this.dao = dao;
 	}
 
 	@Override
 	public void discoverChildren() {
-		XBMCLog.info("discovering movie genres");
-		Map<Integer, String> genres = dao.getGenres();
-		for (final String genre : genres.values()) {
-			ListFolder f = new ListFolder(genre) {
+		XBMCLog.info("discovering movie years");
+		Map<Integer, String> years = dao.getYears();
+		for (final String year : years.values()) {
+			ListFolder f = new ListFolder(year) {
 				@Override
 				public List<VirtualFolder> getList() {
-					XBMCLog.info("loading movie titles for: " + genre);
-					Map<Integer, String> map = dao.getTitlesByGenre(genre);
+					XBMCLog.info("loading movie titles for: " + year);
+					Map<Integer, String> map = dao.getTitlesByYear(year);
 					List<VirtualFolder> list = new ArrayList<VirtualFolder>();
 					for (Integer id : map.keySet()) {
 						String name = map.get(id);

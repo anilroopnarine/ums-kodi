@@ -1,4 +1,4 @@
-package net.pms.external.xbmc.folders.movie;
+package net.pms.external.xbmc.folders.video.tv;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,20 +9,19 @@ import net.pms.external.Consts;
 import net.pms.external.XBMCLog;
 import net.pms.external.xbmc.VideoDAO;
 import net.pms.external.xbmc.folders.ListFolder;
-import net.pms.external.xbmc.folders.TitleVirtualFolder;
 
-public class MovieYearFolder extends VirtualFolder {
+public class TVShowYearFolder extends VirtualFolder {
 
 	private VideoDAO dao;
 
-	public MovieYearFolder(VideoDAO dao) {
-		super(Consts.YEAR, null);
+	public TVShowYearFolder(VideoDAO dao) {
+		super(Consts.PREMIERED, null);
 		this.dao = dao;
 	}
 
 	@Override
 	public void discoverChildren() {
-		XBMCLog.info("discovering movie years");
+		XBMCLog.info("discovering tv show years");
 		Map<Integer, String> years = dao.getYears();
 		for (final String year : years.values()) {
 			ListFolder f = new ListFolder(year) {
@@ -33,7 +32,7 @@ public class MovieYearFolder extends VirtualFolder {
 					List<VirtualFolder> list = new ArrayList<VirtualFolder>();
 					for (Integer id : map.keySet()) {
 						String name = map.get(id);
-						TitleVirtualFolder title = new TitleVirtualFolder(id, name, dao);
+						TVShowFolder title = new TVShowFolder(dao, id, name);
 						list.add(title);
 					}
 					return list;

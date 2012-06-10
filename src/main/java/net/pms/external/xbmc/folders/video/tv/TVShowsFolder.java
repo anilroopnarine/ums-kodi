@@ -1,4 +1,4 @@
-package net.pms.external.xbmc.folders.tv;
+package net.pms.external.xbmc.folders.video.tv;
 
 import net.pms.dlna.virtual.VirtualFolder;
 import net.pms.external.XBMCLog;

@@ -17,6 +17,8 @@ public abstract class XBMCDAO {
 
 	public final static int DB_TYPE_MYSQL = 1;
 	public final static int DB_TYPE_SQLITE = 2;
+	public final static int DB_TYPE_MYSQL_MUSIC = 3;
+	public final static int DB_TYPE_SQLITE_MUSIC = 4;
 
 	private int dbType;
 	private Connection connection;
@@ -26,9 +28,9 @@ public abstract class XBMCDAO {
 	}
 
 	protected void connect() {
-		if (dbType == DB_TYPE_MYSQL) {
+		if (dbType == DB_TYPE_MYSQL || dbType == DB_TYPE_MYSQL_MUSIC) {
 			connectMySQL();
-		} else if (dbType == DB_TYPE_SQLITE) {
+		} else if (dbType == DB_TYPE_SQLITE || dbType == DB_TYPE_SQLITE_MUSIC) {
 			connectSQLite();
 		}
 	}
@@ -47,7 +49,7 @@ public abstract class XBMCDAO {
 	private void connectSQLite() {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			connection = DriverManager.getConnection("jdbc:sqlite:" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_SQLITE));
+			connection = DriverManager.getConnection("jdbc:sqlite:" + XBMCConfig.getSetting(dbType == DB_TYPE_SQLITE ? XBMCConfig.PMS_XBMC_VIDEO_SQLITE : XBMCConfig.PMS_XBMC_MUSIC_SQLITE));
 		} catch (Exception e) {
 			XBMCLog.error(e);
 		}

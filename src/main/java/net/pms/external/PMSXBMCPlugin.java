@@ -19,7 +19,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.pms.dlna.DLNAResource;
 import net.pms.dlna.virtual.VirtualFolder;
-import net.pms.external.xbmc.folders.VideoFolder;
+import net.pms.external.xbmc.folders.music.MusicFolder;
+import net.pms.external.xbmc.folders.video.VideoFolder;
 
 /**
  * 
@@ -48,7 +49,7 @@ public class PMSXBMCPlugin implements AdditionalFolderAtRoot {
 		plugRoot.addChild(new VideoFolder("Videos", null));
 
 		XBMCLog.info("adding music folder");
-		plugRoot.addChild(new VirtualFolder("Music", null));
+		plugRoot.addChild(new MusicFolder("Music", null));
 	}
 
 	@Override

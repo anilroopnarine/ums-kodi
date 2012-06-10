@@ -1,4 +1,4 @@
-package net.pms.external.xbmc.folders;
+package net.pms.external.xbmc.folders.video;
 
 import net.pms.dlna.virtual.VirtualFolder;
 import net.pms.external.XBMCConfig;
@@ -6,8 +6,8 @@ import net.pms.external.XBMCLog;
 import net.pms.external.xbmc.MovieDAO;
 import net.pms.external.xbmc.TVDAO;
 import net.pms.external.xbmc.XBMCDAO;
-import net.pms.external.xbmc.folders.movie.MoviesFolder;
-import net.pms.external.xbmc.folders.tv.TVShowsFolder;
+import net.pms.external.xbmc.folders.video.movie.MoviesFolder;
+import net.pms.external.xbmc.folders.video.tv.TVShowsFolder;
 
 public class VideoFolder extends VirtualFolder {
 

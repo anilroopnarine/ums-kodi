@@ -1,4 +1,4 @@
-package net.pms.external.xbmc.folders;
+package net.pms.external.xbmc.folders.video;
 
 import java.util.List;
 

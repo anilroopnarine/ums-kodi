@@ -1,4 +1,4 @@
-package net.pms.external.xbmc.folders.tv;
+package net.pms.external.xbmc.folders.video.tv;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,7 +9,7 @@ import net.pms.dlna.virtual.VirtualFolder;
 import net.pms.external.XBMCLog;
 import net.pms.external.xbmc.VideoDAO;
 import net.pms.external.xbmc.folders.ListFolder;
-import net.pms.external.xbmc.folders.TitleVirtualFolder;
+import net.pms.external.xbmc.folders.video.TitleVirtualFolder;
 
 public class TVShowFolder extends VirtualFolder {
 
