@@ -5,7 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+
 import net.pms.dlna.virtual.VirtualFolder;
+import net.pms.external.Consts;
 import net.pms.external.XBMCLog;
 import net.pms.external.xbmc.VideoDAO;
 import net.pms.external.xbmc.folders.ListFolder;
@@ -32,7 +35,8 @@ public class TVShowFolder extends VirtualFolder {
 		Iterator<String> seasonsIter = seasons.keySet().iterator();
 		while (seasonsIter.hasNext()) {
 			final String seasonId = seasonsIter.next();
-			ListFolder seasonFolder = new ListFolder(seasons.get(seasonId)) {
+/*	A limitation on ps3 only allows 8 folders deep, so I'm removing the season selection path. So all episodes will be displayed from all seasons always		
+ * ListFolder seasonFolder = new ListFolder(seasons.get(seasonId)) {
 				@Override
 				public List<VirtualFolder> getList() {
 					XBMCLog.logTimeStart("discovering files for " + seasons.get(seasonId));
@@ -47,7 +51,18 @@ public class TVShowFolder extends VirtualFolder {
 					return episodesList;
 				}
 			};
-			addChild(seasonFolder);
+			addChild(seasonFolder);*/
+			
+			if (!seasonId.equals(Consts.ALL)) {
+				XBMCLog.logTimeStart("discovering files for " + seasons.get(seasonId));
+				Map<Integer, String> episodes = dao.getEpisodes(tvShowId, seasonId);
+				XBMCLog.logTimeStop();
+				for (Integer id : episodes.keySet()) {
+					String title = episodes.get(id);
+					TitleVirtualFolder titleFolder = new TitleVirtualFolder(id, title, dao);
+					addChild(titleFolder);
+				}
+			}
 		}
 	}
 }

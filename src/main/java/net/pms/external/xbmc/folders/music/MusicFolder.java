@@ -15,10 +15,10 @@ public class MusicFolder extends VirtualFolder {
 	public void discoverChildren() {
 		XBMCLog.info("discovering music folders");
 		int dbType = 0;
-		String mySQLHost = XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_HOST);
-		XBMCLog.info("MySQL Host: *" + mySQLHost + "*");
+		String sqlitePath = XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_SQLITE_MUSIC_DB);
+		XBMCLog.info("SQLite music Path: *" + sqlitePath + "*");
 
-		if (mySQLHost == null || mySQLHost.length() == 0) {
+		if (sqlitePath != null && sqlitePath.length() > 0) {
 			XBMCLog.info("Using SQLite");
 			dbType = XBMCDAO.DB_TYPE_SQLITE_MUSIC;
 		} else {

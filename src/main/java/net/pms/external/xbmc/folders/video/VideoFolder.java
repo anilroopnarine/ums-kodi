@@ -18,15 +18,15 @@ public class VideoFolder extends VirtualFolder {
 	public void discoverChildren() {
 		XBMCLog.info("discovering video folders");
 		int dbType = 0;
-		String mySQLHost = XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_HOST);
-		XBMCLog.info("MySQL Host: *" + mySQLHost + "*");
+		String sqlitePath = XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_SQLITE_VIDEO_DB);
+		XBMCLog.info("SQLite Video Path: *" + sqlitePath + "*");
 
-		if (mySQLHost == null || mySQLHost.length() == 0) {
+		if (sqlitePath != null && sqlitePath.length() > 0) {
 			XBMCLog.info("Using SQLite");
-			dbType = XBMCDAO.DB_TYPE_SQLITE;
+			dbType = XBMCDAO.DB_TYPE_SQLITE_VIDEO;
 		} else {
 			XBMCLog.info("Using MySQL");
-			dbType = XBMCDAO.DB_TYPE_MYSQL;
+			dbType = XBMCDAO.DB_TYPE_MYSQL_VIDEO;
 		}
 
 		addChild(new MoviesFolder("Movies", new MovieDAO(dbType)));

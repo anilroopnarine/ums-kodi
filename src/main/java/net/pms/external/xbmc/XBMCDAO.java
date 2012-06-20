@@ -15,8 +15,8 @@ import net.pms.external.XBMCLog;
 
 public abstract class XBMCDAO {
 
-	public final static int DB_TYPE_MYSQL = 1;
-	public final static int DB_TYPE_SQLITE = 2;
+	public final static int DB_TYPE_MYSQL_VIDEO = 1;
+	public final static int DB_TYPE_SQLITE_VIDEO = 2;
 	public final static int DB_TYPE_MYSQL_MUSIC = 3;
 	public final static int DB_TYPE_SQLITE_MUSIC = 4;
 
@@ -28,19 +28,21 @@ public abstract class XBMCDAO {
 	}
 
 	protected void connect() {
-		if (dbType == DB_TYPE_MYSQL || dbType == DB_TYPE_MYSQL_MUSIC) {
-			connectMySQL();
-		} else if (dbType == DB_TYPE_SQLITE || dbType == DB_TYPE_SQLITE_MUSIC) {
+		if (dbType == DB_TYPE_MYSQL_VIDEO) {
+			connectMySQL(XBMCConfig.PMS_XBMC_MYSQL_VIDEO_DB);
+		} else if (dbType == DB_TYPE_MYSQL_MUSIC) {
+			connectMySQL(XBMCConfig.PMS_XBMC_MYSQL_MUSIC_DB);
+		} else if (dbType == DB_TYPE_SQLITE_VIDEO || dbType == DB_TYPE_SQLITE_MUSIC) {
 			connectSQLite();
 		}
 	}
 
-	private void connectMySQL() {
+	private void connectMySQL(String db) {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			String url = "jdbc:mysql://" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_HOST) + ":" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_PORT) + "/" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_DB);
+			String url = "jdbc:mysql://" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_MYSQL_HOST) + ":" + XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_MYSQL_PORT) + "/" + XBMCConfig.getSetting(db);
 			XBMCLog.info("connecting to mysql with url: " + url);
-			connection = DriverManager.getConnection(url, XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_USER), XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_VIDEO_MYSQL_PASS));
+			connection = DriverManager.getConnection(url, XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_MYSQL_USER), XBMCConfig.getSetting(XBMCConfig.PMS_XBMC_MYSQL_PASS));
 		} catch (Exception e) {
 			XBMCLog.error(e);
 		}
@@ -49,7 +51,7 @@ public abstract class XBMCDAO {
 	private void connectSQLite() {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			connection = DriverManager.getConnection("jdbc:sqlite:" + XBMCConfig.getSetting(dbType == DB_TYPE_SQLITE ? XBMCConfig.PMS_XBMC_VIDEO_SQLITE : XBMCConfig.PMS_XBMC_MUSIC_SQLITE));
+			connection = DriverManager.getConnection("jdbc:sqlite:" + XBMCConfig.getSetting(dbType == DB_TYPE_SQLITE_VIDEO ? XBMCConfig.PMS_XBMC_SQLITE_VIDEO_DB : XBMCConfig.PMS_XBMC_SQLITE_MUSIC_DB));
 		} catch (Exception e) {
 			XBMCLog.error(e);
 		}
