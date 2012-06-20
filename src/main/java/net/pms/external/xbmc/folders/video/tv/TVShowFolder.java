@@ -1,17 +1,12 @@
 package net.pms.external.xbmc.folders.video.tv;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 import net.pms.dlna.virtual.VirtualFolder;
 import net.pms.external.Consts;
 import net.pms.external.XBMCLog;
 import net.pms.external.xbmc.VideoDAO;
-import net.pms.external.xbmc.folders.ListFolder;
 import net.pms.external.xbmc.folders.video.TitleVirtualFolder;
 
 public class TVShowFolder extends VirtualFolder {
