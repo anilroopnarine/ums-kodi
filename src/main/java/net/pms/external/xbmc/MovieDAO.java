@@ -63,6 +63,53 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 	}
 
 	@Override
+	
+	public Map<Integer, String> getSets() {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			st = getConnection().prepareStatement("select idSet, strSet from sets");
+			rs = st.executeQuery();
+			Map<Integer, String> result = new TreeMap<Integer, String>();
+			while (rs.next()) {
+				result.put(rs.getInt("idSet"), rs.getString("strSet"));
+			}
+			return result;
+			
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+
+	@Override
+
+	public Map<Integer, String> getTitlesBySet(String set) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			String stStr = "select distinct movie.idMovie, movie.c00 from movie, sets  where movie.idSet=sets.idSet and sets.strSet=?";
+			st = getConnection().prepareStatement(stStr);
+			st.setString(1, set);
+			rs = st.executeQuery();
+			Map<Integer, String> result = new TreeMap<Integer, String>();
+			while (rs.next()) {
+				result.put(rs.getInt("idMovie"), rs.getString("c00"));
+			}
+			return result;
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+	
+	@Override
 	public TitleInfo getTitleByID(int titleId) {
 		PreparedStatement st = null;
 		ResultSet rs = null;

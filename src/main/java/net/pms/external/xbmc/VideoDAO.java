@@ -10,6 +10,10 @@ public interface VideoDAO {
 	public List<String> getInitials();
 
 	public Map<Integer, String> getTitlesByInitial(String initial);
+	
+	public Map<Integer, String> getSets();
+
+	public Map<Integer, String> getTitlesBySet(String set);
 
 	public Map<Integer, String> getGenres();
 

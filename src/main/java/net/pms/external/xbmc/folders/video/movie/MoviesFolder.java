@@ -19,6 +19,7 @@ public class MoviesFolder extends VirtualFolder {
 		addChild(new MovieTitleFolder(dao));
 		addChild(new MovieYearFolder(dao));
 		addChild(new MovieGenreFolder(dao));
+		addChild(new MovieSetsFolder(dao));
 	}
 
 }

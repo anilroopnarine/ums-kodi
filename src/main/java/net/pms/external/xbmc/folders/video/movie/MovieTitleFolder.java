@@ -6,6 +6,7 @@ import java.util.Map;
 
 import net.pms.dlna.virtual.VirtualFolder;
 import net.pms.external.Consts;
+import net.pms.external.MapUtil;
 import net.pms.external.XBMCLog;
 import net.pms.external.xbmc.VideoDAO;
 import net.pms.external.xbmc.folders.ListFolder;
@@ -29,7 +30,8 @@ public class MovieTitleFolder extends VirtualFolder {
 				@Override
 				public List<VirtualFolder> getList() {
 					XBMCLog.info("loading movie titles for: " + initial);
-					Map<Integer, String> map = dao.getTitlesByInitial(initial);
+					// Added Sort to Movie List
+					Map<Integer, String> map = MapUtil.sortByValue(dao.getTitlesByInitial(initial));
 					List<VirtualFolder> list = new ArrayList<VirtualFolder>();
 					for (Integer id : map.keySet()) {
 						String name = map.get(id);
