@@ -56,6 +56,7 @@ public class TitleVirtualFolder extends VirtualFolder {
 		});
 		XBMCLog.logTimeStop();
 
+		
 		if (info.getTagline() != null && info.getTagline().length() > 0) {
 			addChild(new VirtualFolder("Tagline: " + info.getTagline(), null));
 		}
@@ -118,7 +119,8 @@ public class TitleVirtualFolder extends VirtualFolder {
 		});
 
 		addThumbnails(info.getPosters(), Consts.POSTER);
-		addThumbnails(info.getPosters(), Consts.FANART);
+		addThumbnails(info.getFanart(), Consts.FANART);
+		
 	}
 
 	private void addThumbnails(List<String> thumbUrls, String title) {

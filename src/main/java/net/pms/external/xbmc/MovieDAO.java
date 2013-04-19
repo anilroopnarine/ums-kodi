@@ -89,6 +89,7 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 			return null;
 		} finally {
 			disconnect(st, rs);
+			disconnect(st1, rs1);
 		}
 	}
 
@@ -130,9 +131,7 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 			while (rs.next()) {
 				if (mi == null) {
 					mi = new TitleInfo();
-					mi.setPosters(getPosterURLs(titleId));
-					mi.setFanart(getFanartURLs(titleId));
-					mi.setActors(getActors(titleId));
+
 				}
 				if (rs.getInt("iStreamType") == 0) { // video stream
 					mi.setTitleId(titleId);
@@ -157,6 +156,10 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 					mi.setAudioChannels(rs.getString("iAudioChannels"));
 				}
 			}
+			disconnect(st,rs);
+			mi.setPosters(getPosterURLs(titleId));
+			mi.setFanart(getFanartURLs(titleId));
+			mi.setActors(getActors(titleId));
 			return mi;
 		} catch (SQLException e) {
 			XBMCLog.error(e);
