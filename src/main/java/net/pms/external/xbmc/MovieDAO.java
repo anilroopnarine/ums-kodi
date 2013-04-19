@@ -66,14 +66,21 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 	
 	public Map<Integer, String> getSets() {
 		PreparedStatement st = null;
+		PreparedStatement st1 = null;
 		ResultSet rs = null;
+		ResultSet rs1 = null;
 		connect();
 		try {
 			st = getConnection().prepareStatement("select idSet, strSet from sets");
 			rs = st.executeQuery();
 			Map<Integer, String> result = new TreeMap<Integer, String>();
 			while (rs.next()) {
-				result.put(rs.getInt("idSet"), rs.getString("strSet"));
+				st1 = getConnection().prepareStatement("select count(*) from movie where idSet = ?");
+				st1.setInt(1,rs.getInt("idSet"));
+				rs1 = st1.executeQuery();
+				if(rs1.next() && rs1.getInt(1) > 1){
+					result.put(rs.getInt("idSet"), rs.getString("strSet"));
+				}
 			}
 			return result;
 			
