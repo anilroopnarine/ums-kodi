@@ -13,7 +13,7 @@ public interface VideoDAO {
 	
 	public Map<Integer, String> getSets();
 
-	public Map<Integer, String> getTitlesBySet(String set);
+	public Map<Integer, String> getTitlesBySet(int setId);
 
 	public Map<Integer, String> getGenres();
 

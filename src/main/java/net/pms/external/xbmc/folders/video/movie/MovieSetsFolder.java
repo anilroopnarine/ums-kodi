@@ -25,14 +25,14 @@ public class MovieSetsFolder extends VirtualFolder {
 	public void discoverChildren() {
 		XBMCLog.info("discovering movie sets");
 		// Added Sort to set List
-			Map<Integer, String> sets = MapUtil.sortByValue(dao.getSets());
-			for (final String set : sets.values()) {
-				ListFolder f = new ListFolder(set) {
+			final Map<Integer, String> sets = MapUtil.sortByValue(dao.getSets());
+			for (final Integer setId : sets.keySet()) {
+				ListFolder f = new ListFolder(sets.get(setId)) {
 					@Override
 					public List<VirtualFolder> getList() {
-						XBMCLog.info("loading movie titles for: " + set);
+						XBMCLog.info("loading movie titles for: " + sets.get(setId));
 						// Added Sort to Movie List
-						Map<Integer, String> map = MapUtil.sortByValue(dao.getTitlesBySet(set));
+						Map<Integer, String> map = MapUtil.sortByValue(dao.getTitlesBySet(setId));
 						List<VirtualFolder> list = new ArrayList<VirtualFolder>();
 						for (Integer id : map.keySet()) {
 							String name = map.get(id);

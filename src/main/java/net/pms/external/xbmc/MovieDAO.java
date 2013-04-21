@@ -95,14 +95,14 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 
 	@Override
 
-	public Map<Integer, String> getTitlesBySet(String set) {
+	public Map<Integer, String> getTitlesBySet(int setId) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		connect();
 		try {
-			String stStr = "select distinct movie.idMovie, movie.c00 from movie, sets  where movie.idSet=sets.idSet and sets.strSet=?";
+			String stStr = "select distinct movie.idMovie, movie.c00 from movie, sets  where movie.idSet=sets.idSet and sets.idSet=?";
 			st = getConnection().prepareStatement(stStr);
-			st.setString(1, set);
+			st.setInt(1, setId);
 			rs = st.executeQuery();
 			Map<Integer, String> result = new TreeMap<Integer, String>();
 			while (rs.next()) {
@@ -123,7 +123,7 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 		ResultSet rs = null;
 		connect();
 		try {
-			String stStr = "select *, movieview.idFile fi from movieview,streamdetails where streamdetails.idFile = movieview.idFile and movieview.idMovie = ?";
+			String stStr = "select *, movieview.idFile fi from movieview left join streamdetails on streamdetails.idFile = movieview.idFile where movieview.idMovie = ?";
 			st = getConnection().prepareStatement(stStr);
 			st.setInt(1, titleId);
 			rs = st.executeQuery();

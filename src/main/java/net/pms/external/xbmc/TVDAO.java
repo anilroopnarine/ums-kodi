@@ -331,4 +331,16 @@ public class TVDAO extends XBMCDAO implements VideoDAO {
 		}
 		return links;
 	}
+
+	@Override
+	public Map<Integer, String> getSets() {
+		// No sets for TV Shows
+		return null;
+	}
+
+	@Override
+	public Map<Integer, String> getTitlesBySet(int setId) {
+		// No sets for TV Shows
+		return null;
+	}
 }
