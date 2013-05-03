@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
-	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
-	<classpathentry kind="var" path="M2_REPO/org/samba/jcifs/1.3.17/jcifs-1.3.17.jar"/>
-	<classpathentry kind="var" path="M2_REPO/net/pms/pms/1.81.0-SNAPSHOT/"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="/pms"/>
-	<classpathentry kind="lib" path="C:/Users/anil/.m2/repository/org/slf4j/slf4j-api/1.7.1/slf4j-api-1.7.1.jar">
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
 		<attributes>
+			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="org.slf4j"/>
-			<attribute name="maven.artifactId" value="slf4j-api"/>
-			<attribute name="maven.version" value="1.7.1"/>
-			<attribute name="maven.scope" value="compile"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/PS3 Media Server/pms.jar" sourcepath="C:/development/workspace/ps3mediaserver/src"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
