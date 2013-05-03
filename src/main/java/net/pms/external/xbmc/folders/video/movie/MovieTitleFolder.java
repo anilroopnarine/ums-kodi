@@ -25,6 +25,23 @@ public class MovieTitleFolder extends VirtualFolder {
 	public void discoverChildren() {
 		XBMCLog.info("discovering movie initials");
 		List<String> initials = dao.getInitials();
+		ListFolder all = new ListFolder("All") {
+			@Override
+			public List<VirtualFolder> getList() {
+				XBMCLog.info("loading all movie titles");
+				// Added Sort to Movie List
+				Map<Integer, String> map = MapUtil.sortByValue(dao.getTitlesByInitial(null));
+				List<VirtualFolder> list = new ArrayList<VirtualFolder>();
+				for (Integer id : map.keySet()) {
+					String name = map.get(id);
+					TitleVirtualFolder title = new TitleVirtualFolder(id, name, dao);
+					list.add(title);
+				}
+				return list;
+			}
+		};
+		addChild(all);
+		
 		for (final String initial : initials) {
 			ListFolder f = new ListFolder(initial) {
 				@Override

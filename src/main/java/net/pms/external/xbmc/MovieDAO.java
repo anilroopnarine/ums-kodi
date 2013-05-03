@@ -45,9 +45,17 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 		ResultSet rs = null;
 		connect();
 		try {
-			String stStr = "select idMovie, c00 from movieview where substr(c00,1,1) = ? order by c00 asc";
-			st = getConnection().prepareStatement(stStr);
-			st.setString(1, initial);
+			String sql;
+			if (initial != null) {
+				sql = "select idMovie, c00 from movieview where substr(c00,1,1) = ? order by c00 asc";
+			} else {
+				sql = "select idMovie, c00 from movieview order by c00 asc";
+			}
+			XBMCLog.info("executing: " + sql);
+			st = getConnection().prepareStatement(sql);
+			if (initial != null) {
+				st.setString(1, initial);
+			}
 			rs = st.executeQuery();
 			Map<Integer, String> result = new TreeMap<Integer, String>();
 			while (rs.next()) {
@@ -63,7 +71,6 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 	}
 
 	@Override
-	
 	public Map<Integer, String> getSets() {
 		PreparedStatement st = null;
 		PreparedStatement st1 = null;
@@ -76,14 +83,14 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 			Map<Integer, String> result = new TreeMap<Integer, String>();
 			while (rs.next()) {
 				st1 = getConnection().prepareStatement("select count(*) from movie where idSet = ?");
-				st1.setInt(1,rs.getInt("idSet"));
+				st1.setInt(1, rs.getInt("idSet"));
 				rs1 = st1.executeQuery();
-				if(rs1.next() && rs1.getInt(1) > 1){
+				if (rs1.next() && rs1.getInt(1) > 1) {
 					result.put(rs.getInt("idSet"), rs.getString("strSet"));
 				}
 			}
 			return result;
-			
+
 		} catch (SQLException e) {
 			XBMCLog.error(e);
 			return null;
@@ -94,7 +101,6 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 	}
 
 	@Override
-
 	public Map<Integer, String> getTitlesBySet(int setId) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
@@ -116,7 +122,7 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 			disconnect(st, rs);
 		}
 	}
-	
+
 	@Override
 	public TitleInfo getTitleByID(int titleId) {
 		PreparedStatement st = null;
@@ -156,7 +162,7 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 					mi.setAudioChannels(rs.getString("iAudioChannels"));
 				}
 			}
-			disconnect(st,rs);
+			disconnect(st, rs);
 			mi.setPosters(getPosterURLs(titleId));
 			mi.setFanart(getFanartURLs(titleId));
 			mi.setActors(getActors(titleId));
