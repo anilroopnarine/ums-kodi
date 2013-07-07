@@ -15,6 +15,8 @@ public interface VideoDAO {
 	
 	public Map<Integer, String> getByRatings();
 	
+	public Map<Integer, String> getRandom();
+	
 	public Map<Integer, String> getSets();
 
 	public Map<Integer, String> getTitlesBySet(int setId);

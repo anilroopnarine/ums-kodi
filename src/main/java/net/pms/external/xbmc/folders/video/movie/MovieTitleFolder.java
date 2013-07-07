@@ -77,6 +77,24 @@ public class MovieTitleFolder extends VirtualFolder {
 		};
 		addChild(rated);
 		
+		ListFolder random = new ListFolder("Random") {
+			@Override
+			public List<VirtualFolder> getList() {
+				XBMCLog.info("loading 5 randomly selected movies ");
+				// Added Sort to Movie List
+				Map<Integer, String> map = MapUtil.sortByValue(dao.getRandom());
+				List<VirtualFolder> list = new ArrayList<VirtualFolder>();
+				for (Integer id : map.keySet()) {
+					String [] name = map.get(id).split("__SEP__");
+					float rating = 10f - Float.parseFloat(name[0]);
+					TitleVirtualFolder title = new TitleVirtualFolder(id, name[1] + " -------- " + Float.toString(rating), dao);
+					list.add(title);
+				}
+				return list;
+			}
+		};
+		addChild(random);
+		
 		for (final String initial : initials) {
 			ListFolder f = new ListFolder(initial) {
 				@Override

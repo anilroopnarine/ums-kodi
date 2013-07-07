@@ -355,4 +355,10 @@ public class TVDAO extends XBMCDAO implements VideoDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Map<Integer, String> getRandom() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

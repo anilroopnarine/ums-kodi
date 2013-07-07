@@ -427,4 +427,30 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 			disconnect(st, rs);
 		}
 	}
+	
+	@Override
+	public Map<Integer, String> getRandom() {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			String sql;
+			sql = "select idMovie, c00, c05 from movieview order by random() limit(10)";
+			
+			XBMCLog.info("executing: " + sql);
+			st = getConnection().prepareStatement(sql);
+			
+			rs = st.executeQuery();
+			Map<Integer, String> result = new TreeMap<Integer, String>();
+			while (rs.next()) {
+				result.put(rs.getInt("idMovie"), Float.toString(10f-rs.getFloat("c05")) + "__SEP__" + rs.getString("c00"));
+			}
+			return result;
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
 }
