@@ -42,6 +42,41 @@ public class MovieTitleFolder extends VirtualFolder {
 		};
 		addChild(all);
 		
+		ListFolder recent = new ListFolder("Recent") {
+			@Override
+			public List<VirtualFolder> getList() {
+				XBMCLog.info("loading recent movie titles");
+				// Added Sort to Movie List
+				Map<Integer, String> map = MapUtil.sortByValue(dao.getRecent());
+				List<VirtualFolder> list = new ArrayList<VirtualFolder>();
+				for (Integer id : map.keySet()) {
+					String name = map.get(id).split("__SEP__")[1];
+					TitleVirtualFolder title = new TitleVirtualFolder(id, name, dao);
+					list.add(title);
+				}
+				return list;
+			}
+		};
+		addChild(recent);
+		
+		ListFolder rated = new ListFolder("By Rating") {
+			@Override
+			public List<VirtualFolder> getList() {
+				XBMCLog.info("loading movies by rating");
+				// Added Sort to Movie List
+				Map<Integer, String> map = MapUtil.sortByValue(dao.getByRatings());
+				List<VirtualFolder> list = new ArrayList<VirtualFolder>();
+				for (Integer id : map.keySet()) {
+					String [] name = map.get(id).split("__SEP__");
+					float rating = 10f - Float.parseFloat(name[0]);
+					TitleVirtualFolder title = new TitleVirtualFolder(id, name[1] + " -------- " + Float.toString(rating), dao);
+					list.add(title);
+				}
+				return list;
+			}
+		};
+		addChild(rated);
+		
 		for (final String initial : initials) {
 			ListFolder f = new ListFolder(initial) {
 				@Override

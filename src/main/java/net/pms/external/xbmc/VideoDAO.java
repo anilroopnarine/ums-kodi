@@ -11,6 +11,10 @@ public interface VideoDAO {
 
 	public Map<Integer, String> getTitlesByInitial(String initial);
 	
+	public Map<Integer, String> getRecent();
+	
+	public Map<Integer, String> getByRatings();
+	
 	public Map<Integer, String> getSets();
 
 	public Map<Integer, String> getTitlesBySet(int setId);

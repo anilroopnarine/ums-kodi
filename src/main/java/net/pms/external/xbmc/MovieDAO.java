@@ -14,6 +14,7 @@ import net.pms.external.xbmc.info.TitleInfo;
 
 public class MovieDAO extends XBMCDAO implements VideoDAO {
 
+	private int maxID = 1000000;
 	public MovieDAO(int dbType) {
 		super(dbType);
 	}
@@ -59,7 +60,10 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 			rs = st.executeQuery();
 			Map<Integer, String> result = new TreeMap<Integer, String>();
 			while (rs.next()) {
-				result.put(rs.getInt("idMovie"), rs.getString("c00"));
+				int i = rs.getInt("idMovie");
+				result.put(i, rs.getString("c00"));
+				if(i > this.maxID)
+					this.maxID = i+1;	
 			}
 			return result;
 		} catch (SQLException e) {
@@ -362,6 +366,58 @@ public class MovieDAO extends XBMCDAO implements VideoDAO {
 			Map<Integer, String> result = new TreeMap<Integer, String>();
 			while (rs.next()) {
 				result.put(rs.getInt("idMovie"), rs.getString("c00"));
+			}
+			return result;
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+
+	@Override
+	public Map<Integer, String> getRecent() {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			String sql;
+			sql = "select idMovie, c00 from movieview order by c00 asc";
+			
+			XBMCLog.info("executing: " + sql);
+			st = getConnection().prepareStatement(sql);
+			
+			rs = st.executeQuery();
+			Map<Integer, String> result = new TreeMap<Integer, String>();
+			while (rs.next()) {
+				result.put(rs.getInt("idMovie"), Integer.toString(this.maxID-rs.getInt("idMovie")) + "__SEP__" + rs.getString("c00"));
+			}
+			return result;
+		} catch (SQLException e) {
+			XBMCLog.error(e);
+			return null;
+		} finally {
+			disconnect(st, rs);
+		}
+	}
+
+	@Override
+	public Map<Integer, String> getByRatings() {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		connect();
+		try {
+			String sql;
+			sql = "select idMovie, c00, c05 from movieview order by c05 desc";
+			
+			XBMCLog.info("executing: " + sql);
+			st = getConnection().prepareStatement(sql);
+			
+			rs = st.executeQuery();
+			Map<Integer, String> result = new TreeMap<Integer, String>();
+			while (rs.next()) {
+				result.put(rs.getInt("idMovie"), Float.toString(10f-rs.getFloat("c05")) + "__SEP__" + rs.getString("c00"));
 			}
 			return result;
 		} catch (SQLException e) {

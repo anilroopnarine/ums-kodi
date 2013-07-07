@@ -343,4 +343,16 @@ public class TVDAO extends XBMCDAO implements VideoDAO {
 		// No sets for TV Shows
 		return null;
 	}
+
+	@Override
+	public Map<Integer, String> getRecent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<Integer, String> getByRatings() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
