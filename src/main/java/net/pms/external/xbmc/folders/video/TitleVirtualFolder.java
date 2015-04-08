@@ -11,6 +11,7 @@ import net.pms.external.XBMCLog;
 import net.pms.external.xbmc.VideoDAO;
 import net.pms.external.xbmc.info.TitleInfo;
 import net.pms.formats.Format;
+import net.pms.configuration.RendererConfiguration;
 
 public class TitleVirtualFolder extends VirtualFolder {
 
@@ -48,8 +49,8 @@ public class TitleVirtualFolder extends VirtualFolder {
 			}
 
 			@Override
-			public void startPlaying(String rendererId) {
-				super.startPlaying(rendererId);
+			public void startPlaying(String rendererId, RendererConfiguration render) {
+				super.startPlaying(rendererId, null);
 				info.setWatched(info.getWatched() + 1);
 				dao.updateWatched(info);
 			}

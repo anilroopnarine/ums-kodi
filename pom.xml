@@ -3,16 +3,18 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.pms.external</groupId>
-	<artifactId>pms-xbmc</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<artifactId>ums-kodi</artifactId>
+	<version>2.0</version>
 	<packaging>jar</packaging>
-	<name>pms-xbmc</name>
-	<url>http://code.google.com/p/pms-xbmc</url>
+	<name>ums-kodi</name>
+	<url>https://github.com/anilroopnarine/ums-kodi</url>
 	<dependencies>
 		<dependency>
 			<groupId>net.pms</groupId>
-			<artifactId>ps3mediaserver</artifactId>
-			<version>1.80.0</version>
+			<artifactId>ums</artifactId>
+			<version>5.1.1</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/ums.jar</systemPath>
 		</dependency>
 	</dependencies>
 	<build>
@@ -20,11 +22,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
+				<version>3.2</version>
 				<configuration>
-					<compilerVersion>1.6</compilerVersion>
-					<source>1.6</source>
-					<target>1.6</target>
+					<compilerVersion>1.7</compilerVersion>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 		</plugins>
