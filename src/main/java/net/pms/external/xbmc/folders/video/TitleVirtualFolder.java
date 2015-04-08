@@ -45,14 +45,14 @@ public class TitleVirtualFolder extends VirtualFolder {
 		addChild(new RealFile(info.getFile()) {
 			@Override
 			public String getName() {
-				return "Play";
+				return "Play Movie";
 			}
 
 			@Override
 			public void startPlaying(String rendererId, RendererConfiguration render) {
 				super.startPlaying(rendererId, null);
-				info.setWatched(info.getWatched() + 1);
-				dao.updateWatched(info);
+				//info.setWatched(info.getWatched() + 1);
+				//dao.updateWatched(info);
 			}
 		});
 		XBMCLog.logTimeStop();
@@ -103,6 +103,7 @@ public class TitleVirtualFolder extends VirtualFolder {
 		if (info.getEpisode() != null && info.getEpisode().length() > 0) {
 			addChild(new VirtualFolder("Season/Episode: " + info.getEpisode(), null));
 		}
+/*
 		addChild(new VirtualFolder("Watched: ", info.getWatched() + " times") {
 			@Override
 			public String getName() {
@@ -118,6 +119,7 @@ public class TitleVirtualFolder extends VirtualFolder {
 				return true;
 			}
 		});
+*/
 
 		addThumbnails(info.getPosters(), Consts.POSTER);
 		addThumbnails(info.getFanart(), Consts.FANART);

@@ -62,12 +62,6 @@ public abstract class XBMCDAO {
 			if (connection != null) {
 				connection.close();
 			}
-			if (st != null) {
-				st.close();
-			}
-			if (rs != null) {
-				rs.close();
-			}
 		} catch (SQLException e) {
 			XBMCLog.error(e);
 		}

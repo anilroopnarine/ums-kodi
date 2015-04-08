@@ -32,7 +32,7 @@ public class PMSXBMCPlugin extends JPanel implements AdditionalFolderAtRoot {
 
 	@Override
 	public String name() {
-		return "PMS XBMC Plug";
+		return "UMS KODI PLUGIN";
 	}
 
 	@Override
