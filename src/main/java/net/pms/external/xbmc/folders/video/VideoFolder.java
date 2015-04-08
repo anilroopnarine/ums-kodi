@@ -8,6 +8,7 @@ import net.pms.external.xbmc.TVDAO;
 import net.pms.external.xbmc.XBMCDAO;
 import net.pms.external.xbmc.folders.video.movie.MoviesFolder;
 import net.pms.external.xbmc.folders.video.tv.TVShowsFolder;
+import net.pms.external.xbmc.folders.video.movie.MovieTitleFolder;
 
 public class VideoFolder extends VirtualFolder {
 
@@ -29,7 +30,8 @@ public class VideoFolder extends VirtualFolder {
 			dbType = XBMCDAO.DB_TYPE_MYSQL_VIDEO;
 		}
 
-		addChild(new MoviesFolder("Movies", new MovieDAO(dbType)));
+		addChild(new MovieTitleFolder( new MovieDAO(dbType)));
+		addChild(new MoviesFolder("Movie Categories", new MovieDAO(dbType)));
 		addChild(new TVShowsFolder("TV shows", new TVDAO(dbType)));
 	}
 }

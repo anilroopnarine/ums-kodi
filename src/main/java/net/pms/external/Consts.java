@@ -1,9 +1,9 @@
 package net.pms.external;
 
 public interface Consts {
-	public final static String TITLE = "Title";
-	public final static String GENRE = "Genre";
-	public final static String YEAR = "Year";
+	public final static String TITLE = "Movies";
+	public final static String GENRE = "Genres";
+	public final static String YEAR = "Years";
 	public final static String SETS = "Sets";
 	public final static String PREMIERED = "Premiered";
 	public final static String POSTER = "Poster";
